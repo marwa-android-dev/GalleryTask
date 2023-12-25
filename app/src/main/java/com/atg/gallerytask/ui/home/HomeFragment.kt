@@ -10,8 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
 import com.atg.gallerytask.databinding.FragmentHomeBinding
+import com.atg.gallerytask.utils.ViewType
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -32,12 +35,25 @@ class HomeFragment : Fragment(), PhotoAdapter.OnItemClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         photoAdapter = PhotoAdapter()
         photoAdapter.setOnItemClickListener(this)
-        binding.rvPhotoList.adapter = photoAdapter
+        val gridLayoutManager = GridLayoutManager(context, 3)
+        binding.rvPhotoList.layoutManager = gridLayoutManager
+
+        val footerAdapter = StateAdapter { photoAdapter.retry() }
+        binding.rvPhotoList.adapter = photoAdapter.withLoadStateFooter(footerAdapter)
+        gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return if (position == photoAdapter.itemCount && footerAdapter.itemCount > 0) {
+                    ViewType.PHOTO_VIEW_TYPE
+                } else {
+                    ViewType.NETWORK_VIEW_TYPE
+                }.value
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.photosDataFlow
-                    .collect { pagingData ->
+                    .collectLatest { pagingData ->
                         photoAdapter.submitData(pagingData)
                     }
             }

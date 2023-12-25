@@ -12,4 +12,6 @@
 
     <string name="menu_home">Home</string>
     <string name="photo">Photo</string>
+
+    <string name="retry">Retry</string>
 </resources>
