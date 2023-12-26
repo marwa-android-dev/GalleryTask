@@ -5,7 +5,6 @@ import androidx.paging.PagingState
 import com.bumptech.glide.load.HttpException
 import com.atg.gallerytask.data.model.Photo
 import com.atg.gallerytask.data.PhotoRepository.Companion.NETWORK_PAGE_SIZE
-import kotlinx.coroutines.delay
 import java.io.IOException
 
 private const val STARTING_PAGE_INDEX = 1
@@ -16,7 +15,7 @@ class PhotoPagingSource(private val remoteDataSource: RemoteDataSource) : Paging
         val position = params.key ?: STARTING_PAGE_INDEX
 
         return try {
-            // delay(3000)
+            // delay(2000)
             val response = remoteDataSource.getRecentPhotos(position)
             val photos = response.body()!!.photos.photoes
 

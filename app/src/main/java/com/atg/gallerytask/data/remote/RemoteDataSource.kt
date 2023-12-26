@@ -8,4 +8,8 @@ class RemoteDataSource(private var photoApi: PhotoApi) {
     suspend fun getRecentPhotos(page: Int): Response<PhotoResponse> {
         return photoApi.getRecentPhotos(page)
     }
+
+    suspend fun searchPhotos(query: String): Response<PhotoResponse>{
+        return photoApi.searchPhotos(query)
+    }
 }

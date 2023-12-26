@@ -4,9 +4,11 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.atg.gallerytask.data.model.Photo
+import com.atg.gallerytask.data.model.PhotoResponse
 import com.atg.gallerytask.data.remote.PhotoPagingSource
 import com.atg.gallerytask.data.remote.RemoteDataSource
 import kotlinx.coroutines.flow.Flow
+import retrofit2.Response
 
 class PhotoRepository(private var remoteDataSource: RemoteDataSource) {
 
@@ -22,5 +24,9 @@ class PhotoRepository(private var remoteDataSource: RemoteDataSource) {
             ),
             pagingSourceFactory = { PhotoPagingSource(remoteDataSource) }
         ).flow
+    }
+
+    suspend fun searchPhotos(query: String): Response<PhotoResponse> {
+        return remoteDataSource.searchPhotos(query)
     }
 }

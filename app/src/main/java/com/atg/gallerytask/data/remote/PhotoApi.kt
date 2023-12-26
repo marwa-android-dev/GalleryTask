@@ -18,8 +18,17 @@ interface PhotoApi {
         @Query("nojsoncallback") noJsonCallback: Int = 1,
         @Query("extras") extras: String = "url_s"
     ): Response<PhotoResponse>
-}
 
+    @GET("services/rest/")
+    suspend fun searchPhotos(
+        @Query("text") query: String,
+        @Query("method") method: String = "flickr.photos.search",
+        @Query("api_key") apiKey: String = API_KEY,
+        @Query("format") format: String = "json",
+        @Query("nojsoncallback") noJsonCallback: Int = 1,
+        @Query("extras") extras: String = "url_s",
+    ): Response<PhotoResponse>
+}
 
 
 
